@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema({
+const blogSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -22,7 +22,7 @@ const postSchema = new mongoose.Schema({
 
     featuredImage: {
         url: String,
-        publicId: String
+        fileId: String
     },
 
     author: {
@@ -34,18 +34,14 @@ const postSchema = new mongoose.Schema({
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
-        required: true
+        // required: true,
+        default:null
     },
 
     status: {
         type: String,
         enum: ["draft", "published", "archived"],
         default: "draft"
-    },
-
-    seo: {
-        metaTitle: String,
-        metaDescription: String
     },
 
     publishedAt: Date,
@@ -55,5 +51,5 @@ const postSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const Post = mongoose.model("Post", postSchema);
-export default Post;
+const Blog = mongoose.model("Blog", blogSchema);
+export default Blog;
