@@ -27,3 +27,8 @@ export const uploadImage = async ({ buffer, filename }) => {
         throw error;
     }
 };
+
+export const deleteImage = async (fileId) => {
+    if (!fileId) return;
+    await client.files.delete(fileId);
+}

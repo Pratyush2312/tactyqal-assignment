@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { createBlog, deleteBlog, getAllBlogs, updateBlog } from '../controllers/blog.controller.js';
 import { validate } from '../middlewares/validator.middleware.js';
 import { blogValidator } from '../validators/blog.validator.js';
-import { authenticateAuthor, authMiddleware } from './../middlewares/auth.middleware.js';
+import { authMiddleware, authorizeAuthor } from './../middlewares/auth.middleware.js';
 import multer from 'multer';
 
 const upload = multer({
@@ -16,6 +16,6 @@ const upload = multer({
 const router = Router();
 router.post("/create", authMiddleware, upload.single("featuredImage"), blogValidator, validate, createBlog);
 router.get("/", getAllBlogs);
-router.put('/update/:id', authMiddleware, authenticateAuthor, upload.single("featuredImage"), blogValidator, validate, updateBlog);
-router.delete("/delete/:id", authMiddleware, authenticateAuthor, deleteBlog);
+router.put('/update/:id', authMiddleware, authorizeAuthor, upload.single("featuredImage"), blogValidator, validate, updateBlog);
+router.delete("/delete/:id", authMiddleware, authorizeAuthor, deleteBlog);
 export const blogRoutes = router;

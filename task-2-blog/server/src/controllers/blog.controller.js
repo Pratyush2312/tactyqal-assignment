@@ -1,12 +1,24 @@
 import Blog from "../models/blog.model.js";
-import { uploadImage } from "../services/storage.service.js";
+import Category from "../models/category.model.js";
+import { deleteImage, uploadImage } from "../services/storage.service.js";
 
 export const createBlog = async (req, res) => {
     try {
         const { user } = req;
-        console.log(user);
-        const { title, content, excerpt, status } = req.body;
+        const { title, content, excerpt, status, category } = req.body;
+        const cat = await Category.findOne({ name: category });
+        if (!cat) {
+            return res.status(404).json({
+                message: "Category not found"
+            })
+        }
+        if (!req.file) { 
+            return res.status(400).json({
+                message:"Featured Image is required"
+            })
+        }
         const response = await uploadImage({ buffer: req.file.buffer, filename: req.file.originalname });
+        
         const blog = await Blog.create({
             title,
             author: user.id,
@@ -14,6 +26,7 @@ export const createBlog = async (req, res) => {
             content,
             status,
             excerpt,
+            category: cat._id,
             featuredImage: {
                 url: response.url,
                 fileId: response.fileId
@@ -61,24 +74,41 @@ export const updateBlog = async (req, res) => {
             "category",
             "content"
         ]
+
         const updates = {};
         for (const field of allowedFields) {
-            if (req.body[field] !== undefined) { 
+            if (req.body[field] !== undefined) {
                 updates[field] = req.body[field];
             }
+        }
+
+        if (req.body.category !== undefined) {
+            const cat = await Category.findOne({ name: req.body.category });
+            if (!cat) {
+                return res.status(404).json({
+                    message: "Category not found"
+                })
+            }
+            updates['category'] = cat._id;
         }
         const blog = await Blog.findByIdAndUpdate(id,
             { $set: updates },
             {
-                new: true,
+                returnDocument: "after",
                 runValidators: true,
             }
         );
+        if (!blog) {
+            return res.status(404).json({
+                message: "Blog not found"
+            });
+        }
         return res.status(200).json({
             message: "Blog Updated",
             data: blog
         })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             message: "Internal Server Error"
         })
@@ -88,7 +118,13 @@ export const updateBlog = async (req, res) => {
 export const deleteBlog = async (req, res) => {
     try {
         const { id } = req.params;
-        await Blog.findByIdAndDelete(id);
+        const blog = await Blog.findByIdAndDelete(id);
+        if(!blog){
+            return res.status(404).json({
+                message:"Blog not found"
+            })
+        }
+        deleteImage(blog.featuredImage.fileId);
         return res.status(200).json({
             message: "Blog Deleted"
         })
