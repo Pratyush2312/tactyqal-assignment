@@ -6,11 +6,12 @@ import { createTokens, hashToken, verifyToken } from '../services/auth.service.j
 
 export const registerController = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
         await User.create({
             name,
             email,
-            password: await bcrypt.hash(password, 10)
+            password: await bcrypt.hash(password, 10),
+            role
         })
         return res.status(201).json({
             message: "User Registered"
@@ -45,19 +46,20 @@ export const loginController = async (req, res) => {
                 runValidators: true
             }
         )
-        console.log(user.refreshToken);
-        res.cookie('refreshToken', refreshToken, {
+        const isProduction = config.NODE_ENV === 'production';
+        res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: config.NODE_ENV === 'production',
-            sameSite: "none",
-            path: '/',
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        });
         return res.status(200).json({
             message: "Login Successfull",
-            accessToken
+            accessToken,
+            user
         })
-    } catch (error) {   
+    } catch (error) {
         return res.status(500).json({
             message: "Internal Server Error",
         })
@@ -95,7 +97,7 @@ export const hydrateUser = async (req, res) => {
                 runValidators: true
             }
         );
-
+        
         if (!user) {
             res.clearCookie("refreshToken", {
                 httpOnly: true,
@@ -108,22 +110,23 @@ export const hydrateUser = async (req, res) => {
                 message: "Invalid or revoked refresh token"
             });
         }
-
+        const isProduction = config.NODE_ENV === 'production';
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: config.NODE_ENV === "production",
-            sameSite: "none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         return res.status(200).json({
             message: "Tokens refreshed",
-            accessToken
+            accessToken,
+            user
         });
 
     } catch (error) {
-
+        console.log(error)
         res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: config.NODE_ENV === "production",
@@ -136,3 +139,22 @@ export const hydrateUser = async (req, res) => {
         });
     }
 };
+
+
+export const logoutController = async (req, res) => { 
+    try {
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: config.NODE_ENV === "production",
+            sameSite: "none",
+            path: "/"
+        });
+        return res.status(201).json({
+            message:"User logged out"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"Internal Server Error"
+        })
+    }
+}

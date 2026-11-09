@@ -6,6 +6,12 @@ export const createBlog = async (req, res) => {
     try {
         const { user } = req;
         const { title, content, excerpt, status, category } = req.body;
+        const blogWithSameName = await Blog.findOne({ title });
+        if(blogWithSameName){
+            return res.status(403).json({
+                message:"Blog with same title exists"
+            })
+        }
         const cat = await Category.findOne({ name: category });
         if (!cat) {
             return res.status(404).json({
@@ -131,6 +137,25 @@ export const deleteBlog = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: "Internal Server Error"
+        })
+    }
+}
+
+export const getBlogBySlug = async (req, res) => { 
+    try {
+        const blog = await Blog.find({ slug: req.params.slug });
+        if(!blog){
+            return res.status(404).json({
+                message:"Blog not found"
+            })
+        }
+        return res.status(200).json({
+            message: "Blog Fetched",
+            data:blog
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"Internal Server Error"
         })
     }
 }

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createBlog, deleteBlog, getAllBlogs, updateBlog } from '../controllers/blog.controller.js';
+import { createBlog, deleteBlog, getAllBlogs, getBlogBySlug, updateBlog } from '../controllers/blog.controller.js';
 import { validate } from '../middlewares/validator.middleware.js';
 import { blogValidator } from '../validators/blog.validator.js';
 import { authMiddleware, authorizeAuthor } from './../middlewares/auth.middleware.js';
@@ -18,4 +18,5 @@ router.post("/create", authMiddleware, upload.single("featuredImage"), blogValid
 router.get("/", getAllBlogs);
 router.put('/update/:id', authMiddleware, authorizeAuthor, upload.single("featuredImage"), blogValidator, validate, updateBlog);
 router.delete("/delete/:id", authMiddleware, authorizeAuthor, deleteBlog);
+router.get("/:slug", getBlogBySlug);
 export const blogRoutes = router;
