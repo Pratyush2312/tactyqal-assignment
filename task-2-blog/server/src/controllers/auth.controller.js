@@ -64,41 +64,75 @@ export const loginController = async (req, res) => {
     }
 }
 
+
 export const hydrateUser = async (req, res) => {
     try {
-        const token = req.cookies.refreshToken;
-        const decoded = verifyToken(token);
-        const user = await User.findById(decoded._id);
+        const token = req.cookies?.refreshToken;
 
-        if (!user || user.refreshToken !== hashToken(token)) {
-
+        if (!token) {
             return res.status(401).json({
-                message: "Invalid tokens"
-            })
+                message: "Refresh token missing"
+            });
         }
+
+        const decoded = verifyToken(token);
+        const oldHash = hashToken(token);
+
         const { accessToken, refreshToken } = createTokens(decoded._id);
-        await User.findByIdAndUpdate(decoded._id,
-            { $set: { refreshToken: hashToken(refreshToken) } },
+
+        const user = await User.findOneAndUpdate(
+            {
+                _id: decoded._id,
+                refreshToken: oldHash
+            },
+            {
+                $set: {
+                    refreshToken: hashToken(refreshToken)
+                }
+            },
             {
                 returnDocument: "after",
                 runValidators: true
             }
-        )
-        res.cookie('refreshToken', refreshToken, {
+        );
+
+        if (!user) {
+            res.clearCookie("refreshToken", {
+                httpOnly: true,
+                secure: config.NODE_ENV === "production",
+                sameSite: "none",
+                path: "/"
+            });
+
+            return res.status(401).json({
+                message: "Invalid or revoked refresh token"
+            });
+        }
+
+        res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: config.NODE_ENV === 'production',
+            secure: config.NODE_ENV === "production",
             sameSite: "none",
-            path: '/',
+            path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        });
+
         return res.status(200).json({
             message: "Tokens refreshed",
             accessToken
-        })
+        });
+
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message:"Intenal Server Error"
-        })
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: config.NODE_ENV === "production",
+            sameSite: "none",
+            path: "/"
+        });
+
+        return res.status(401).json({
+            message: "Invalid or expired refresh token"
+        });
     }
-}
+};
