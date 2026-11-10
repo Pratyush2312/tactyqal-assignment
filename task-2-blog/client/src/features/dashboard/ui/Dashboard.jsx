@@ -61,35 +61,7 @@ const Dashboard = () => {
           New article
         </Link>
       </header>
-
-      <section className="relative mb-10 overflow-hidden rounded-xl bg-[#252a26] p-7 text-white md:p-10">
-        <div className="relative z-10 max-w-xl">
-          <span className="text-xs font-medium uppercase tracking-[0.2em] text-[#d2b777]">
-            Your publishing workspace
-          </span>
-
-          <h2 className="mt-5 text-2xl font-medium leading-snug md:text-3xl">
-            Good ideas deserve
-            <br />
-            <span className="text-[#d2b777]">great stories.</span>
-          </h2>
-
-          <p className="mt-4 max-w-md text-sm leading-6 text-white/65">
-            Create thoughtful content, organise your articles, and keep your
-            publishing workflow moving.
-          </p>
-
-          <Link
-            to="/dashboard/blogs/create"
-            className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#e1c78f] hover:text-white">
-            Write your next story
-            <LuArrowUpRight size={16} />
-          </Link>
-        </div>
-
-        <div className="pointer-events-none absolute -right-12 -top-20 h-72 w-72 rounded-full border border-white/10 md:right-10 md:top-[-120px] md:h-96 md:w-96" />
-        <div className="pointer-events-none absolute -right-4 -top-12 h-56 w-56 rounded-full border border-white/10 md:right-20 md:top-[-80px] md:h-72 md:w-72" />
-      </section>
+    
 
       <section>
         <div className="mb-6 flex items-end justify-between">

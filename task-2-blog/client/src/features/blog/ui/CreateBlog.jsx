@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { useForm } from "react-hook-form";
 import {
   LuArrowLeft,
   LuImagePlus,
@@ -11,26 +10,13 @@ import {
   LuChevronDown,
   LuImage,
 } from "react-icons/lu";
+import { useBlog } from "../hooks/useBlog";
 
 const CreateBlog = () => {
   const [preview, setPreview] = useState(null);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      title: "",
-      excerpt: "",
-      content: "",
-      category: "",
-      status: "draft",
-      featuredImage: null,
-    },
-  });
+  const { register, handleSubmit, watch, errors, setValue, createBlog } =
+    useBlog();
 
   const status = watch("status");
 
@@ -50,14 +36,8 @@ const CreateBlog = () => {
     setValue("featuredImage", null, { shouldValidate: true });
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // UI only: connect your API later.
-  };
-
   return (
     <main className="min-h-screen bg-[#f7f7f5] px-5 py-8 text-[#252a26] md:px-10 md:py-10">
-      {/* Header */}
       <header className="mb-10">
         <Link
           to="/dashboard/blogs"
@@ -87,11 +67,9 @@ const CreateBlog = () => {
         </div>
       </header>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(createBlog)}>
         <div className="grid items-start gap-8 xl:grid-cols-[1fr_320px]">
-          {/* Main editor */}
           <div className="space-y-6">
-            {/* Article details */}
             <section className="rounded-xl border border-[#e7e6e0] bg-white p-6 md:p-8">
               <div className="mb-7 flex items-center gap-3 border-b border-[#efeee9] pb-5">
                 <LuFileText size={19} className="text-[#a18a5b]" />
@@ -130,7 +108,7 @@ const CreateBlog = () => {
                   )}
                 </div>
 
-                {/* Excerpt */}
+              
                 <div>
                   <label className="mb-2 block text-sm font-medium">
                     Excerpt
@@ -272,7 +250,7 @@ const CreateBlog = () => {
                       <option value="startups">Startups</option>
                       <option value="business">Business</option>
                       <option value="marketing">Marketing</option>
-                      <option value="ai">Artificial Intelligence</option>
+                      <option value="Artificial Intelligence">Artificial Intelligence</option>
                     </select>
 
                     <LuChevronDown

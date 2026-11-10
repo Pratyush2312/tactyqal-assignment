@@ -10,16 +10,17 @@ import {
   LuChevronDown,
 } from "react-icons/lu";
 import { axiosInstance } from "../../../config/axiosInstance";
-import { fetchAllBlogs } from "../hooks/useBlogHook";
+import { useBlog } from "../hooks/useBlog";
+import { useSelector } from "react-redux";
 
 const Blogs = () => {
-  const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-    
-  
+
+  const { fetchAllBlogs,} = useBlog();
+  const { blogs, isLoading } = useSelector(state => state.blog);
+    console.log(blogs)
 
   useEffect(() => {
     fetchAllBlogs();
@@ -44,12 +45,12 @@ const Blogs = () => {
 
     if (!confirmed) return;
 
-    try {
-      await axiosInstance.delete(`/blogs/${id}`);
-      setBlogs((prev) => prev.filter((blog) => blog._id !== id));
-    } catch (err) {
-      alert(err.response?.data?.message || "Unable to delete blog.");
-    }
+    // try {
+    //   await axiosInstance.delete(`/blogs/${id}`);
+    //   setBlogs((prev) => prev.filter((blog) => blog._id !== id));
+    // } catch (err) {
+    //   alert(err.response?.data?.message || "Unable to delete blog.");
+    // }
   };
 
   const formatDate = (date) => {
@@ -64,7 +65,6 @@ const Blogs = () => {
 
   return (
     <main className="min-h-screen bg-[#f7f7f5] px-6 py-8 text-[#252a26] md:px-10 md:py-10">
-      {/* Header */}
       <header className="mb-10 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-[#a18a5b]">
@@ -88,7 +88,6 @@ const Blogs = () => {
         </Link>
       </header>
 
-      {/* Toolbar */}
       <section className="mb-6 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
           <LuSearch
@@ -123,7 +122,6 @@ const Blogs = () => {
         </div>
       </section>
 
-      {/* Blog table */}
       <section className="overflow-hidden rounded-xl border border-[#e7e6e0] bg-white">
         <div className="flex items-center justify-between border-b border-[#e7e6e0] px-6 py-5">
           <div>
@@ -136,7 +134,7 @@ const Blogs = () => {
           <LuFileText size={20} className="text-[#a18a5b]" />
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="px-6 py-16 text-center text-sm text-[#92958f]">
             Loading articles...
           </div>
@@ -163,8 +161,9 @@ const Blogs = () => {
               <thead>
                 <tr className="border-b border-[#e7e6e0] bg-[#fafaf8] text-[11px] uppercase tracking-wider text-[#92958f]">
                   <th className="px-6 py-4 font-medium">Article</th>
+                  <th className="px-6 py-4 font-medium">Author</th>
                   <th className="px-6 py-4 font-medium">Category</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
+                  <th className="px-6 py-4 font-medium">Status</th> 
                   <th className="px-6 py-4 font-medium">Date</th>
                   <th className="px-6 py-4 text-right font-medium">Actions</th>
                 </tr>
@@ -200,6 +199,9 @@ const Blogs = () => {
                       </div>
                     </td>
 
+                    <td className="px-6 py-5 text-sm text-[#777b76]">
+                      { blog.author.name}
+                    </td>
                     <td className="px-6 py-5 text-sm text-[#777b76]">
                       {blog.category?.name || "Uncategorised"}
                     </td>
