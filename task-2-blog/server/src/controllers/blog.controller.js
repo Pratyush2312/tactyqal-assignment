@@ -7,9 +7,9 @@ export const createBlog = async (req, res) => {
         const { user } = req;
         const { title, content, excerpt, status, category } = req.body;
         const blogWithSameName = await Blog.findOne({ title });
-        if(blogWithSameName){
+        if (blogWithSameName) {
             return res.status(403).json({
-                message:"Blog with same title exists"
+                message: "Blog with same title exists"
             })
         }
         const cat = await Category.findOne({ name: category });
@@ -18,16 +18,16 @@ export const createBlog = async (req, res) => {
                 message: "Category not found"
             })
         }
-        if (!req.file) { 
+        if (!req.file) {
             return res.status(400).json({
-                message:"Featured Image is required"
+                message: "Featured Image is required"
             })
         }
         const response = await uploadImage({ buffer: req.file.buffer, filename: req.file.originalname });
-        
+
         const blog = await Blog.create({
             title,
-            author: user.id,
+            author: user._id,
             slug: title.toLowerCase().split(" ").join("_"),
             content,
             status,
@@ -53,12 +53,16 @@ export const createBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find();
+        const blogs = await Blog.find()
+            .populate("category", "name slug")
+            .populate("author", "name email")
+            .sort({ createdAt: -1 });;
         if (!blogs) {
             return res.status(404).json({
                 message: "No blogs found"
             })
         }
+
         return res.status(200).json({
             message: "Blogs Fetched",
             data: blogs
@@ -125,9 +129,9 @@ export const deleteBlog = async (req, res) => {
     try {
         const { id } = req.params;
         const blog = await Blog.findByIdAndDelete(id);
-        if(!blog){
+        if (!blog) {
             return res.status(404).json({
-                message:"Blog not found"
+                message: "Blog not found"
             })
         }
         deleteImage(blog.featuredImage.fileId);
@@ -141,21 +145,21 @@ export const deleteBlog = async (req, res) => {
     }
 }
 
-export const getBlogBySlug = async (req, res) => { 
+export const getBlogBySlug = async (req, res) => {
     try {
         const blog = await Blog.find({ slug: req.params.slug });
-        if(!blog){
+        if (!blog) {
             return res.status(404).json({
-                message:"Blog not found"
+                message: "Blog not found"
             })
         }
         return res.status(200).json({
             message: "Blog Fetched",
-            data:blog
+            data: blog
         })
     } catch (error) {
         return res.status(500).json({
-            message:"Internal Server Error"
+            message: "Internal Server Error"
         })
     }
 }
