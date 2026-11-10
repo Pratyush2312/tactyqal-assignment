@@ -5,7 +5,7 @@ import { deleteImage, uploadImage } from "../services/storage.service.js";
 export const createBlog = async (req, res) => {
     try {
         const { user } = req;
-        const { title, content, excerpt, status, category } = req.body;
+        const { title, content, excerpt, category } = req.body;
         const blogWithSameName = await Blog.findOne({ title });
         if (blogWithSameName) {
             return res.status(403).json({
@@ -30,7 +30,6 @@ export const createBlog = async (req, res) => {
             author: user._id,
             slug: title.toLowerCase().split(" ").join("_"),
             content,
-            status,
             excerpt,
             category: cat._id,
             featuredImage: {
@@ -79,7 +78,6 @@ export const updateBlog = async (req, res) => {
         const { id } = req.params;
         const allowedFields = [
             "title",
-            "status",
             "excerpt",
             "category",
             "content"
@@ -158,6 +156,31 @@ export const getBlogBySlug = async (req, res) => {
             data: blog
         })
     } catch (error) {
+        return res.status(500).json({
+            message: "Internal Server Error"
+        })
+    }
+}
+
+export const getBlogsByUser = async (req, res) => {
+    try {
+        const { user } = req;
+        console.log(user);
+        const blogs = await Blog.find({ author: user._id })
+            .populate("category", "name slug")
+            .sort({ createdAt: -1 });
+        console.log(blogs);
+        if (!blogs) {
+            return res.status(404).json({
+                message: "No blogs found"
+            })
+        }
+        return res.status(200).json({
+            message: "Blogs fetched",
+            data: blogs,
+        })
+    } catch (error) {
+        console.log(error)
         return res.status(500).json({
             message: "Internal Server Error"
         })
