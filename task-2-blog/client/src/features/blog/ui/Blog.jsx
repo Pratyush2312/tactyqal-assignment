@@ -15,12 +15,11 @@ import { useSelector } from "react-redux";
 
 const Blogs = () => {
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
   const [error, setError] = useState("");
 
-  const { fetchAllBlogs,} = useBlog();
-  const { blogs, isLoading } = useSelector(state => state.blog);
-    console.log(blogs)
+  const { fetchAllBlogs } = useBlog();
+  const { blogs, isLoading } = useSelector((state) => state.blog);
+  console.log(blogs);
 
   useEffect(() => {
     fetchAllBlogs();
@@ -32,11 +31,11 @@ const Blogs = () => {
         ?.toLowerCase()
         .includes(search.toLowerCase());
 
-      const matchesStatus = status === "all" || blog.status === status;
+      
 
-      return matchesSearch && matchesStatus;
+      return matchesSearch;
     });
-  }, [blogs, search, status]);
+  }, [blogs, search]);
 
   const handleDelete = async (id) => {
     const confirmed = window.confirm(
@@ -104,22 +103,7 @@ const Blogs = () => {
           />
         </div>
 
-        <div className="relative">
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="w-full appearance-none rounded-lg border border-[#e7e6e0] bg-white px-4 py-3 pr-10 text-sm outline-none focus:border-[#b58b36] sm:w-44">
-            <option value="all">All statuses</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
-            <option value="archived">Archived</option>
-          </select>
-
-          <LuChevronDown
-            size={16}
-            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#92958f]"
-          />
-        </div>
+        
       </section>
 
       <section className="overflow-hidden rounded-xl border border-[#e7e6e0] bg-white">
@@ -163,7 +147,6 @@ const Blogs = () => {
                   <th className="px-6 py-4 font-medium">Article</th>
                   <th className="px-6 py-4 font-medium">Author</th>
                   <th className="px-6 py-4 font-medium">Category</th>
-                  <th className="px-6 py-4 font-medium">Status</th> 
                   <th className="px-6 py-4 font-medium">Date</th>
                   <th className="px-6 py-4 text-right font-medium">Actions</th>
                 </tr>
@@ -200,24 +183,12 @@ const Blogs = () => {
                     </td>
 
                     <td className="px-6 py-5 text-sm text-[#777b76]">
-                      { blog.author.name}
+                      {blog.author.name}
                     </td>
                     <td className="px-6 py-5 text-sm text-[#777b76]">
                       {blog.category?.name || "Uncategorised"}
                     </td>
 
-                    <td className="px-6 py-5">
-                      <span
-                        className={`rounded-full px-3 py-1 text-[11px] font-medium capitalize ${
-                          blog.status === "published"
-                            ? "bg-[#edf5ed] text-[#47784c]"
-                            : blog.status === "draft"
-                              ? "bg-[#f5f1e7] text-[#98772e]"
-                              : "bg-[#f0efed] text-[#777b76]"
-                        }`}>
-                        {blog.status}
-                      </span>
-                    </td>
 
                     <td className="px-6 py-5 text-sm text-[#777b76]">
                       {formatDate(blog.publishedAt || blog.createdAt)}

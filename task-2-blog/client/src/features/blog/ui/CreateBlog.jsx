@@ -15,10 +15,8 @@ import { useBlog } from "../hooks/useBlog";
 const CreateBlog = () => {
   const [preview, setPreview] = useState(null);
 
-  const { register, handleSubmit, watch, errors, setValue, createBlog } =
+  const { register, handleSubmit, errors, setValue, createBlog } =
     useBlog();
-
-  const status = watch("status");
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -108,7 +106,6 @@ const CreateBlog = () => {
                   )}
                 </div>
 
-              
                 <div>
                   <label className="mb-2 block text-sm font-medium">
                     Excerpt
@@ -250,7 +247,9 @@ const CreateBlog = () => {
                       <option value="startups">Startups</option>
                       <option value="business">Business</option>
                       <option value="marketing">Marketing</option>
-                      <option value="Artificial Intelligence">Artificial Intelligence</option>
+                      <option value="Artificial Intelligence">
+                        Artificial Intelligence
+                      </option>
                     </select>
 
                     <LuChevronDown
@@ -265,41 +264,14 @@ const CreateBlog = () => {
                     </p>
                   )}
                 </div>
-
-                {/* Status */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium">
-                    Publication status
-                  </label>
-
-                  <div className="relative">
-                    <select
-                      {...register("status")}
-                      className="w-full appearance-none rounded-lg border border-[#e7e6e0] bg-white px-4 py-3 pr-10 text-sm outline-none focus:border-[#b58b36]">
-                      <option value="draft">Draft</option>
-                      <option value="published">Published</option>
-                      <option value="archived">Archived</option>
-                    </select>
-
-                    <LuChevronDown
-                      size={16}
-                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#92958f]"
-                    />
-                  </div>
-                </div>
               </div>
 
               <div className="mt-7 space-y-3">
                 <button
                   type="submit"
                   className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#252a26] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#3b423d]">
-                  {status === "published" ? (
-                    <LuSend size={16} />
-                  ) : (
-                    <LuSave size={16} />
-                  )}
-
-                  {status === "published" ? "Publish article" : "Save draft"}
+                  <LuSend size={16} />
+                  Publish article
                 </button>
 
                 <Link

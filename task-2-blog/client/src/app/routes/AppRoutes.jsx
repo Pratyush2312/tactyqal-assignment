@@ -9,13 +9,14 @@ import Blogs from "../../features/blog/ui/Blog";
 import CreateBlog from "../../features/blog/ui/CreateBlog";
 import { useDispatch } from "react-redux";
 import { hydrateUser } from "../../features/auth/state/authAction";
-
+import { sileo, Toaster } from "sileo";
+import MyBlogs from "../../features/blog/ui/MyBlogs";
+import EditBlog from './../../features/blog/ui/EditBlog';
 const AppRoutes = () => {
-
-    const dispatch = useDispatch();
-    useEffect(() => { 
-        dispatch(hydrateUser());
-    },[])
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(hydrateUser());
+  }, []);
   const router = createBrowserRouter([
     {
       path: "/",
@@ -45,12 +46,25 @@ const AppRoutes = () => {
               path: "blogs/create",
               element: <CreateBlog />,
             },
+            {
+              path: "my-blogs",
+              element:<MyBlogs/>
+            },
+            {
+              path: "blogs/edit/:id",
+              element:<EditBlog/>
+            }
           ],
         },
       ],
     },
   ]);
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <Toaster/>
+      <RouterProvider router={router} />;
+    </>
+  );
 };
 
 export default AppRoutes;

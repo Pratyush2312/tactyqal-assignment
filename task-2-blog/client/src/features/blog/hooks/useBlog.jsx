@@ -1,8 +1,13 @@
-import React from "react";
-import { axiosInstance } from "../../../config/axiosInstance";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { createBlogs, fetchBlogs } from "../state/blogAction";
+import {
+  createBlogs,
+  deleteBlogs,
+  fetchBlogs,
+  getBlogsByUser,
+} from "../state/blogAction";
+import { sileo } from "sileo";
+import { useNavigate } from "react-router";
 
 export const useBlog = () => {
   const {
@@ -21,25 +26,47 @@ export const useBlog = () => {
       featuredImage: null,
     },
   });
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const fetchAllBlogs = async () => {
+  const fetchAllBlogs = () => {
     try {
       dispatch(fetchBlogs());
+      sileo.success({ title: "Blogs Fetched", duration: 3000 });
     } catch (error) {
       console.log(error);
     }
   };
-    
-  const createBlog = async (data) => {
+
+  const createBlog = (data) => {
     try {
       const formData = new FormData();
       for (const [key, value] of Object.entries(data)) {
-        console.log(key, value);
         formData.append(key, value);
       }
       dispatch(createBlogs(formData));
+      sileo.success({ title: "Blog Created", duration: 3000 });
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const fetchBlogByUser = () => {
+    try {
+      dispatch(getBlogsByUser());
+      sileo.success({ title: "Blogs Fetched", duration: 3000 });
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const handleDelete = (id) => {
+    try {
+      const confirm = window.confirm(
+        "Are you sure you want to delete this blog?",
+      );
+      if (!confirm) return;
+      dispatch(deleteBlogs(id));
+      sileo.success({ title: "Blog Deleted", duration: 3000 });
     } catch (error) {
       console.log(error.response);
     }
@@ -53,5 +80,8 @@ export const useBlog = () => {
     setValue,
     createBlog,
     fetchAllBlogs,
+    fetchBlogByUser,
+    handleDelete,
+    navigate,
   };
 };

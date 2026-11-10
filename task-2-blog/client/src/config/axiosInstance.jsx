@@ -9,7 +9,6 @@ export const injectStore = reduxStore => store = reduxStore;
 axiosInstance.interceptors.request.use(
     function (config) {
         const token = store.getState().auth.accessToken;
-        console.log(token);
         config.headers.authorization = `Bearer ${token}`;
         return config
     },
