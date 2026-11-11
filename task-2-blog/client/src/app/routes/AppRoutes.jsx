@@ -12,6 +12,7 @@ import { hydrateUser } from "../../features/auth/state/authAction";
 import { sileo, Toaster } from "sileo";
 import MyBlogs from "../../features/blog/ui/MyBlogs";
 import EditBlog from './../../features/blog/ui/EditBlog';
+import Category from "../../features/category/ui/Category";
 const AppRoutes = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -53,6 +54,10 @@ const AppRoutes = () => {
             {
               path: "blogs/edit/:id",
               element:<EditBlog/>
+            },
+            {
+              path: "categories",
+              element:<Category/>
             }
           ],
         },
