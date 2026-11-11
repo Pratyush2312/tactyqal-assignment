@@ -106,7 +106,9 @@ export const updateBlog = async (req, res) => {
                 runValidators: true,
             }
         );
+        console.log(blog);
         if (!blog) {
+
             return res.status(404).json({
                 message: "Blog not found"
             });
@@ -165,11 +167,9 @@ export const getBlogBySlug = async (req, res) => {
 export const getBlogsByUser = async (req, res) => {
     try {
         const { user } = req;
-        console.log(user);
         const blogs = await Blog.find({ author: user._id })
             .populate("category", "name slug")
             .sort({ createdAt: -1 });
-        console.log(blogs);
         if (!blogs) {
             return res.status(404).json({
                 message: "No blogs found"
@@ -185,4 +185,28 @@ export const getBlogsByUser = async (req, res) => {
             message: "Internal Server Error"
         })
     }
+}
+
+export const getBlogById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const blog = await Blog.findById(id)
+            .populate("category", "name slug")
+            .sort({ createdAt: -1 });
+        if (!blog) {
+            return res.status(404).json({
+                message:"Blog not found"
+            })
+        } 
+        console.log(blog);
+        return res.status(200).json({
+            message: "Blog Fetched",
+            data:blog
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"Internal Server Error"
+        })
+    }
+
 }
