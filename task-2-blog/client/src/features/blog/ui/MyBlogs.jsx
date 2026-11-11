@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 const MyBlogs = () => {
   const [search, setSearch] = useState("");
   const myBlogs = useSelector((state) => state.blog.myBlogs);
-  const { fetchBlogByUser, handleDelete, navigate } = useBlog();
+  const { fetchBlogByUser, handleDelete, onEditClick } = useBlog();
   useEffect(() => {
     fetchBlogByUser();
   }, []);
@@ -134,7 +134,7 @@ const MyBlogs = () => {
                     <td className="px-7 py-5">
                       <div className="flex justify-end gap-4">
                         <button
-                          onClick={() => navigate(`/blogs/edit/${blog._id}`)}
+                          onClick={()=>onEditClick(blog._id)}
                           type="button"
                           title="Edit"
                           className="text-gray-400 transition hover:text-[#a77b3c]">

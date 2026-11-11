@@ -30,7 +30,6 @@ export const getBlogsByUser = createAsyncThunk(
   async (_, thunkApi) => {
     try {
       const response = await axiosInstance.get("/blog/me");
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -46,6 +45,31 @@ export const deleteBlogs = createAsyncThunk(
       const response = await axiosInstance.delete(`/blog/delete/${id}`);
       console.log(response.data);
       return { id, data: response.data };
+    } catch (error) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
+export const getBlogsById = createAsyncThunk(
+  "blogs/fetchById",
+  async (id, thunkApi) => {
+    try {
+      const response = await axiosInstance.get(`/blog/id/${id}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
+export const editBlog = createAsyncThunk(
+  "blogs/edit",
+  async ({ id, data }, thunkApi) => {
+    try {
+      const response = await axiosInstance.put(`/blog/update/${id}`, data);
+      return response.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error.message);
     }

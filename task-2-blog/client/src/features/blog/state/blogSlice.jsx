@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createBlogs,
   deleteBlogs,
+  editBlog,
   fetchBlogs,
+  getBlogsById,
   getBlogsByUser,
 } from "./blogAction";
 
@@ -13,6 +15,7 @@ const blogSlice = createSlice({
     myBlogs: [],
     isLoading: true,
     error: null,
+    editingBlog: null,
   },
   extraReducers: (builder) => {
     builder
@@ -61,6 +64,35 @@ const blogSlice = createSlice({
         state.blogs = state.blogs.filter(
           (blog) => blog._id !== action.payload.id,
         );
+      })
+      .addCase(getBlogsById.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getBlogsById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.editingBlog = action.payload.data;
+      })
+      .addCase(getBlogsById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(editBlog.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(editBlog.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const updatedBlog = action.payload.data;
+        state.myBlogs = state.myBlogs.map((blog) =>
+          blog._id === updatedBlog._id ? updatedBlog : blog,
+        );
+        state.blogs = state.blogs.map((blog) =>
+          blog._id === updatedBlog._id ? updatedBlog : blog,
+        );
+        state.editingBlog = null;
+      })
+      .addCase(editBlog.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload.data;
       });
   },
 });

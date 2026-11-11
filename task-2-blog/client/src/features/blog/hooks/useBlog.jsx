@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createBlogs,
   deleteBlogs,
+  editBlog,
   fetchBlogs,
+  getBlogsById,
   getBlogsByUser,
 } from "../state/blogAction";
 import { sileo } from "sileo";
 import { useNavigate } from "react-router";
+import { generateToast } from "../../../utils/toast.util";
 
 export const useBlog = () => {
   const {
@@ -15,6 +18,7 @@ export const useBlog = () => {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -31,7 +35,8 @@ export const useBlog = () => {
   const fetchAllBlogs = () => {
     try {
       dispatch(fetchBlogs());
-      sileo.success({ title: "Blogs Fetched", duration: 3000 });
+      
+      generateToast("success", "Blogs Fetched");
     } catch (error) {
       console.log(error);
     }
@@ -44,7 +49,8 @@ export const useBlog = () => {
         formData.append(key, value);
       }
       dispatch(createBlogs(formData));
-      sileo.success({ title: "Blog Created", duration: 3000 });
+      
+      generateToast("success", "Blog Created");
     } catch (error) {
       console.log(error.response);
     }
@@ -53,7 +59,7 @@ export const useBlog = () => {
   const fetchBlogByUser = () => {
     try {
       dispatch(getBlogsByUser());
-      sileo.success({ title: "Blogs Fetched", duration: 3000 });
+      generateToast('success','Blogs Fetched')
     } catch (error) {
       console.log(error.response);
     }
@@ -72,16 +78,39 @@ export const useBlog = () => {
     }
   };
 
+  const onEditClick = (id) => { 
+    try {
+      console.log("clicked");
+      dispatch(getBlogsById(id));
+      navigate(`/dashboard/blogs/edit/${id}`);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleEdit = async (id,data) => {
+    try {
+      await dispatch(editBlog({ id, data })).unwrap();
+      navigate("/dashboard/blogs");
+      generateToast('success', "Blog Updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     register,
     handleSubmit,
     watch,
     errors,
+    reset,
     setValue,
     createBlog,
     fetchAllBlogs,
     fetchBlogByUser,
     handleDelete,
     navigate,
+    onEditClick,
+    handleEdit
   };
 };
