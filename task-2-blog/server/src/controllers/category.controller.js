@@ -4,6 +4,12 @@ export const createCategory = async (req, res) => {
     try {
         const { name, description } = req.body;
         const slug = name.split(" ").join("_");
+        const existingCategory = await Category.findOne({ name });
+        if (existingCategory) { 
+            return res.status(403).json({
+                message:"Category with this name already exists"
+            })
+        }
         const category = await Category.create({
             name,
             slug,
@@ -14,6 +20,7 @@ export const createCategory = async (req, res) => {
             data: category
         })
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Internal Server Error"
         })
@@ -35,31 +42,6 @@ export const getAllCategory = async (req, res) => {
 }
 
 
-export const updateCategory = async (req, res) => {
-    try {
-        const { name, description } = req.body;
-        const category = await Category.findByIdAndUpdate(req.params.id,
-            { $set: { name, description } },
-            {
-                returnDocument: "after",
-                runValidators: true
-            }
-        );
-        if (!category) {
-            return res.status(404).json({
-                message: "Category not found"
-            })
-        }
-        return res.status(200).json({
-            message: "Category updated successfully",
-            data: category
-        })
-    } catch (error) {
-        return res.status(500).json({
-            message: "Internal Server Error"
-        })
-    }
-}
 
 export const deleteCategory = async (req, res) => {
     try {
