@@ -40,15 +40,18 @@ const Dashboard = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-[#f7f7f5] px-6 py-8 text-[#252a26] md:px-10 md:py-10">
-      <header className="mb-12 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-[#a18a5b]">
+    <main className="min-h-screen overflow-x-hidden bg-[#f7f7f5] px-4 py-6 text-[#252a26] sm:px-6 sm:py-8 md:px-10 md:py-10">
+      {/* Header */}
+      <header className="mb-9 flex flex-col items-start justify-between gap-5 sm:mb-12 sm:flex-row sm:items-center sm:gap-4">
+        <div className="min-w-0">
+          <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-[#a18a5b] sm:text-xs sm:tracking-[0.2em]">
             Workspace / Dashboard
           </p>
-          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+
+          <h1 className="break-words text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
             Good to see you, {user?.name?.split(" ")[0] || "there"}.
           </h1>
+
           <p className="mt-3 text-sm text-[#777b76]">
             Here's your space to create and manage content.
           </p>
@@ -56,20 +59,23 @@ const Dashboard = () => {
 
         <Link
           to="/dashboard/blogs/create"
-          className="inline-flex items-center gap-2 rounded-md bg-[#252a26] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#3b423d]">
+          className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-md bg-[#252a26] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#3b423d] sm:w-auto">
           <LuPlus size={17} />
           New article
         </Link>
       </header>
-    
 
+      {/* Quick Access */}
       <section>
-        <div className="mb-6 flex items-end justify-between">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-6">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#a18a5b]">
+            <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-[#a18a5b] sm:text-xs sm:tracking-[0.18em]">
               Workspace
             </p>
-            <h2 className="mt-2 text-xl font-semibold">Quick access</h2>
+
+            <h2 className="mt-2 text-lg font-semibold sm:text-xl">
+              Quick access
+            </h2>
           </div>
 
           <span className="text-xs text-[#92958f]">
@@ -77,7 +83,7 @@ const Dashboard = () => {
           </span>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {actions.map((action) => {
             const Icon = action.icon;
 
@@ -85,7 +91,7 @@ const Dashboard = () => {
               <Link
                 key={action.title}
                 to={action.link}
-                className="group rounded-xl border border-[#e7e6e0] bg-white p-6 transition duration-200 hover:-translate-y-1 hover:border-[#c6b17f] hover:shadow-sm">
+                className="group min-w-0 rounded-xl border border-[#e7e6e0] bg-white p-5 transition duration-200 hover:-translate-y-1 hover:border-[#c6b17f] hover:shadow-sm sm:p-6">
                 <div className="flex items-start justify-between">
                   <div className="rounded-lg bg-[#f5f1e7] p-3 text-[#a18a5b]">
                     <Icon size={20} />
@@ -97,13 +103,15 @@ const Dashboard = () => {
                   />
                 </div>
 
-                <h3 className="mt-7 text-lg font-semibold">{action.title}</h3>
+                <h3 className="mt-6 text-lg font-semibold sm:mt-7">
+                  {action.title}
+                </h3>
 
                 <p className="mt-2 text-sm leading-6 text-[#858982]">
                   {action.description}
                 </p>
 
-                <p className="mt-6 flex items-center gap-2 text-sm font-medium text-[#a18a5b]">
+                <p className="mt-5 flex items-center gap-2 text-sm font-medium text-[#a18a5b] sm:mt-6">
                   {action.label}
                   <LuArrowUpRight size={15} />
                 </p>
@@ -113,9 +121,11 @@ const Dashboard = () => {
         </div>
       </section>
 
-      <section className="mt-12 border-t border-[#e7e6e0] pt-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[#92958f]">
+      {/* Footer */}
+      <section className="mt-9 border-t border-[#e7e6e0] pt-5 sm:mt-12 sm:pt-6">
+        <div className="flex flex-col gap-3 text-xs text-[#92958f] sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <p>TACTYQAL LABS · CONTENT MANAGEMENT</p>
+
           <p className="flex items-center gap-2">
             <LuPenLine size={13} />
             Create something worth reading.

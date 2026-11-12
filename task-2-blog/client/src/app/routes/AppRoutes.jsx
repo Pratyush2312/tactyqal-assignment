@@ -11,8 +11,9 @@ import { useDispatch } from "react-redux";
 import { hydrateUser } from "../../features/auth/state/authAction";
 import { sileo, Toaster } from "sileo";
 import MyBlogs from "../../features/blog/ui/MyBlogs";
-import EditBlog from './../../features/blog/ui/EditBlog';
+import EditBlog from "./../../features/blog/ui/EditBlog";
 import Category from "../../features/category/ui/Category";
+import PublicRoute from "./PublicRoute";
 const AppRoutes = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -21,12 +22,19 @@ const AppRoutes = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Login />,
+      element: <PublicRoute />,
+      children: [
+        {
+          path: "",
+          element: <Login />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
+        },
+      ],
     },
-    {
-      path: "/register",
-      element: <Register />,
-    },
+
     {
       path: "/dashboard",
       element: <ProtectedRoute />,
@@ -49,16 +57,16 @@ const AppRoutes = () => {
             },
             {
               path: "my-blogs",
-              element:<MyBlogs/>
+              element: <MyBlogs />,
             },
             {
               path: "blogs/edit/:id",
-              element:<EditBlog/>
+              element: <EditBlog />,
             },
             {
               path: "categories",
-              element:<Category/>
-            }
+              element: <Category />,
+            },
           ],
         },
       ],
@@ -66,7 +74,7 @@ const AppRoutes = () => {
   ]);
   return (
     <>
-      <Toaster/>
+      <Toaster />
       <RouterProvider router={router} />;
     </>
   );

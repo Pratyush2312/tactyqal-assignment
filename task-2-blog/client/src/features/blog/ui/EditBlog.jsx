@@ -1,27 +1,23 @@
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router";
-import { useForm } from "react-hook-form";
 import { LuArrowLeft, LuImagePlus, LuSave, LuTag } from "react-icons/lu";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useBlog } from "../hooks/useBlog";
-
-const categories = [
-  { name: "Technology" },
-  { name: "Artificial Intelligence" },
-  { name: "Startups" },
-  { name: "Business" },
-  { name: "Marketing" },
-  { name: "Product Management" },
-  { name: "Innovation" },
-  { name: "Leadership" },
-];
 
 const EditBlog = () => {
   const { id } = useParams();
 
   const { editingBlog, isLoading } = useSelector((state) => state.blog);
-  const { register, handleSubmit, watch, reset, errors, handleEdit } =
-    useBlog();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    errors,
+    handleEdit,
+    categories,
+  } = useBlog();
 
   useEffect(() => {
     if (editingBlog && editingBlog._id === id) {
@@ -37,12 +33,16 @@ const EditBlog = () => {
   const content = watch("content");
 
   if (isLoading && !editingBlog) {
-    return <div className="p-8">Loading blog...</div>;
+    return (
+      <div className="min-h-screen bg-[#f8f8f6] p-5 text-sm text-gray-500 sm:p-8">
+        Loading blog...
+      </div>
+    );
   }
 
   if (!editingBlog || editingBlog._id !== id) {
     return (
-      <div className="p-8">
+      <div className="min-h-screen bg-[#f8f8f6] p-5 text-sm text-[#252a26] sm:p-8">
         Blog not found. Please go back and try again.
         <Link
           to="/dashboard/my-blogs"
@@ -54,30 +54,33 @@ const EditBlog = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f8f6] px-8 py-10 lg:px-12">
-      <div className="mb-10">
+    <main className="min-h-screen overflow-x-hidden bg-[#f8f8f6] px-4 py-6 sm:px-6 sm:py-8 lg:px-12 lg:py-10">
+      <header className="mb-8 sm:mb-10">
         <Link
           to="/dashboard/my-blogs"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#a77b3c]">
+          className="mb-5 inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#a77b3c] sm:mb-6">
           <LuArrowLeft size={16} />
           Back to my blogs
         </Link>
 
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.22em] text-[#a77b3c]">
+        <p className="mb-2 text-xs font-medium uppercase tracking-[0.15em] text-[#a77b3c] sm:mb-3 sm:tracking-[0.22em]">
           Workspace / My Blogs / Edit
         </p>
 
-        <h1 className="font-serif text-4xl text-[#252a26]">Edit Article</h1>
+        <h1 className="font-serif text-3xl text-[#252a26] sm:text-4xl">
+          Edit Article
+        </h1>
 
         <p className="mt-2 text-sm text-gray-500">
           Refine your article and update its publishing details.
         </p>
-      </div>
+      </header>
 
       <form onSubmit={handleSubmit((data) => handleEdit(id, data))}>
-        <div className="grid grid-cols-1 items-start gap-8 xl:grid-cols-[1fr_320px]">
-          <section className="rounded-2xl border border-[#e7e5df] bg-white p-7 lg:p-9">
-            <div className="mb-8 border-b border-[#eeede8] pb-6">
+        <div className="grid min-w-0 grid-cols-1 items-start gap-5 lg:gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
+          {/* Article content */}
+          <section className="min-w-0 rounded-xl border border-[#e7e5df] bg-white p-4 sm:rounded-2xl sm:p-6 lg:p-9">
+            <div className="mb-6 border-b border-[#eeede8] pb-5 sm:mb-8 sm:pb-6">
               <h2 className="text-base font-semibold text-[#252a26]">
                 Article content
               </h2>
@@ -85,7 +88,9 @@ const EditBlog = () => {
                 Edit the content of your article.
               </p>
             </div>
-            <div className="mb-7">
+
+            {/* Title */}
+            <div className="mb-6 sm:mb-7">
               <label className="mb-2 block text-sm font-medium text-[#343a35]">
                 Article title
               </label>
@@ -103,7 +108,7 @@ const EditBlog = () => {
                   },
                 })}
                 placeholder="Enter article title"
-                className="w-full rounded-xl border border-[#e7e5df] px-4 py-4 text-sm outline-none focus:border-[#b58b36]"
+                className="w-full min-w-0 rounded-lg border border-[#e7e5df] px-4 py-3 text-sm outline-none transition focus:border-[#b58b36] sm:rounded-xl sm:py-4"
               />
 
               {errors.title && (
@@ -114,7 +119,7 @@ const EditBlog = () => {
             </div>
 
             {/* Excerpt */}
-            <div className="mb-7">
+            <div className="mb-6 sm:mb-7">
               <label className="mb-2 block text-sm font-medium text-[#343a35]">
                 Short description
               </label>
@@ -133,7 +138,7 @@ const EditBlog = () => {
                 })}
                 rows={3}
                 placeholder="Write a short description..."
-                className="w-full resize-none rounded-xl border border-[#e7e5df] px-4 py-4 text-sm outline-none transition focus:border-[#b58b36]"
+                className="w-full min-w-0 resize-none rounded-lg border border-[#e7e5df] px-4 py-3 text-sm outline-none transition focus:border-[#b58b36] sm:rounded-xl sm:py-4"
               />
 
               {errors.excerpt && (
@@ -143,11 +148,13 @@ const EditBlog = () => {
               )}
             </div>
 
+            {/* Article body */}
             <div>
-              <div className="mb-2 flex items-center justify-between">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <label className="text-sm font-medium text-[#343a35]">
                   Article body
                 </label>
+
                 <span className="text-xs text-gray-400">
                   {content?.length || 0} characters
                 </span>
@@ -167,7 +174,7 @@ const EditBlog = () => {
                 })}
                 rows={18}
                 placeholder="Write your article here..."
-                className="w-full resize-y rounded-xl border border-[#e7e5df] px-5 py-4 text-sm leading-7 outline-none transition focus:border-[#b58b36]"
+                className="w-full min-w-0 resize-y rounded-lg border border-[#e7e5df] px-4 py-4 text-sm leading-7 outline-none transition focus:border-[#b58b36] sm:rounded-xl sm:px-5"
               />
 
               {errors.content && (
@@ -179,44 +186,46 @@ const EditBlog = () => {
           </section>
 
           {/* Sidebar */}
-          <aside className="space-y-7">
+          <aside className="min-w-0 space-y-5 sm:space-y-7">
             {/* Publishing */}
-            <section className="rounded-2xl border border-[#e7e5df] bg-white p-6">
+            <section className="rounded-xl border border-[#e7e5df] bg-white p-4 sm:rounded-2xl sm:p-6">
               <h2 className="mb-5 text-base font-semibold text-[#252a26]">
                 Publishing
               </h2>
 
+              {/* Category */}
+              <div>
+                <div className="mb-4 flex items-center gap-2">
+                  <LuTag size={18} className="text-[#a77b3c]" />
+                  <h3 className="text-sm font-semibold text-[#252a26]">
+                    Category
+                  </h3>
+                </div>
+
+                <select
+                  {...register("category", {
+                    required: "Please select a category",
+                  })}
+                  className="w-full rounded-lg border border-[#e7e5df] bg-white px-4 py-3 text-sm outline-none transition focus:border-[#b58b36] sm:rounded-xl">
+                  <option value="">Select category</option>
+                  {categories.map((category) => (
+                    <option key={category.name} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+
+                {errors.category && (
+                  <p className="mt-2 text-xs text-red-500">
+                    {errors.category.message}
+                  </p>
+                )}
+              </div>
+
               <div className="mt-7 flex flex-col gap-3">
-                <section className="rounded-2xl border border-[#e7e5df] bg-white p-6">
-                  <div className="mb-5 flex items-center gap-2">
-                    <LuTag size={18} className="text-[#a77b3c]" />
-                    <h2 className="text-base font-semibold text-[#252a26]">
-                      Category
-                    </h2>
-                  </div>
-
-                  <select
-                    {...register("category", {
-                      required: "Please select a category",
-                    })}
-                    className="w-full rounded-xl border border-[#e7e5df] bg-white px-4 py-3 text-sm outline-none focus:border-[#b58b36]">
-                    <option value="">Select category</option>
-                    {categories.map((category) => (
-                      <option key={category.name} value={category.name}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {errors.category && (
-                    <p className="mt-2 text-xs text-red-500">
-                      {errors.category.message}
-                    </p>
-                  )}
-                </section>
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#252a26] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#3a403b]">
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#252a26] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#3a403b] active:scale-[0.99]">
                   <LuSave size={17} />
                   Save changes
                 </button>
@@ -228,7 +237,9 @@ const EditBlog = () => {
                 </Link>
               </div>
             </section>
-            <section className="rounded-2xl border border-[#e7e5df] bg-white p-6">
+
+            {/* Featured image */}
+            <section className="rounded-xl border border-[#e7e5df] bg-white p-4 sm:rounded-2xl sm:p-6">
               <div className="mb-5 flex items-center gap-2">
                 <LuImagePlus size={18} className="text-[#a77b3c]" />
                 <h2 className="text-base font-semibold text-[#252a26]">
@@ -240,7 +251,7 @@ const EditBlog = () => {
                 <img
                   src={editingBlog.featuredImage.url}
                   alt="Featured"
-                  className="h-44 w-full rounded-xl object-cover"
+                  className="h-44 w-full rounded-lg object-cover sm:rounded-xl"
                 />
               ) : (
                 <p className="text-sm text-gray-400">
@@ -251,7 +262,7 @@ const EditBlog = () => {
           </aside>
         </div>
       </form>
-    </div>
+    </main>
   );
 };
 

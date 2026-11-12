@@ -8,25 +8,25 @@ export default function Register() {
   const password = watch("password", "");
 
   const inputClassName = (fieldName) =>
-    `w-full rounded-md border bg-white px-4 py-3 text-sm outline-none transition ${
+    `w-full min-w-0 rounded-md border bg-white px-4 py-3 text-sm outline-none transition ${
       errors[fieldName]
         ? "border-red-300 focus:border-red-500"
         : "border-[#dedfda] focus:border-[#9b7b39]"
     }`;
 
   return (
-    <main className="min-h-screen bg-[#f7f7f5] flex items-center justify-center px-5 py-12 text-[#202321]">
+    <main className="flex min-h-screen items-center justify-center bg-[#f7f7f5] px-4 py-8 text-[#202321] sm:px-6 sm:py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="text-xl font-semibold tracking-tight">
           tactyqal<span className="text-[#b58b36]">.</span>
         </Link>
 
-        <div className="mt-12 mb-8">
+        <div className="mb-7 mt-9 sm:mb-8 sm:mt-12">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#858984]">
             Get started
           </p>
 
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
             Create your account
           </h1>
 
@@ -38,7 +38,7 @@ export default function Register() {
         <form
           onSubmit={handleSubmit(handleRegister)}
           noValidate
-          className="space-y-5">
+          className="space-y-4 sm:space-y-5">
           <div>
             <label htmlFor="name" className="mb-2 block text-sm font-medium">
               Name
@@ -86,6 +86,7 @@ export default function Register() {
               </p>
             )}
           </div>
+
           <div>
             <label htmlFor="role" className="mb-2 block text-sm font-medium">
               Register as
@@ -97,7 +98,7 @@ export default function Register() {
               {...register("role", {
                 required: "Please select a role",
               })}
-              className="w-full rounded-md border border-[#dedfda] bg-white px-4 py-3 text-sm outline-none transition focus:border-[#9b7b39]">
+              className="w-full min-w-0 rounded-md border border-[#dedfda] bg-white px-4 py-3 text-sm outline-none transition focus:border-[#9b7b39]">
               <option value="author">Author</option>
               <option value="admin">Admin</option>
             </select>
@@ -106,6 +107,7 @@ export default function Register() {
               <p className="mt-2 text-xs text-red-500">{errors.role.message}</p>
             )}
           </div>
+
           <div>
             <label
               htmlFor="password"
@@ -160,12 +162,12 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full rounded-md bg-[#252a26] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#3a403b]">
+            className="w-full rounded-md bg-[#252a26] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#3a403b] active:scale-[0.99]">
             Create account
           </button>
         </form>
 
-        <p className="mt-7 text-center text-sm text-[#777d78]">
+        <p className="mt-6 text-center text-sm text-[#777d78] sm:mt-7">
           Already have an account?{" "}
           <Link
             to="/"
@@ -174,7 +176,7 @@ export default function Register() {
           </Link>
         </p>
 
-        <p className="mt-12 text-center text-xs text-[#a0a39e]">
+        <p className="mt-9 text-center text-xs text-[#a0a39e] sm:mt-12">
           © 2026 Tactyqal Labs. All rights reserved.
         </p>
       </div>

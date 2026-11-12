@@ -5,17 +5,15 @@ import {
   LuImagePlus,
   LuX,
   LuFileText,
-  LuSave,
   LuSend,
   LuChevronDown,
-  LuImage,
 } from "react-icons/lu";
 import { useBlog } from "../hooks/useBlog";
 
 const CreateBlog = () => {
   const [preview, setPreview] = useState(null);
 
-  const { register, handleSubmit, errors, setValue, createBlog } =
+  const { register, handleSubmit, errors, setValue, createBlog, categories } =
     useBlog();
 
   const handleImageChange = (e) => {
@@ -25,6 +23,7 @@ const CreateBlog = () => {
 
     setValue("featuredImage", file, { shouldValidate: true });
 
+    if (preview) URL.revokeObjectURL(preview);
     setPreview(URL.createObjectURL(file));
   };
 
@@ -35,46 +34,47 @@ const CreateBlog = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f7f5] px-5 py-8 text-[#252a26] md:px-10 md:py-10">
-      <header className="mb-10">
+    <main className="min-h-screen bg-[#f7f7f5] px-4 py-6 text-[#252a26] sm:px-6 sm:py-8 md:px-10 md:py-10">
+      <header className="mb-8 sm:mb-10">
         <Link
           to="/dashboard/blogs"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-[#858982] transition hover:text-[#a18a5b]">
+          className="mb-5 inline-flex items-center gap-2 text-sm text-[#858982] transition hover:text-[#a18a5b] sm:mb-6">
           <LuArrowLeft size={16} />
           Back to articles
         </Link>
 
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-[#a18a5b]">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+          <div className="min-w-0">
+            <p className="mb-2 text-xs font-medium uppercase tracking-[0.15em] text-[#a18a5b] sm:tracking-[0.2em]">
               Workspace / Blogs / New article
             </p>
 
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
               Create an article
             </h1>
 
-            <p className="mt-3 text-sm text-[#777b76]">
+            <p className="mt-2 text-sm text-[#777b76] sm:mt-3">
               Put your thoughts into words and share your story.
             </p>
           </div>
 
-          <span className="rounded-full border border-[#e7e6e0] bg-white px-4 py-2 text-xs text-[#777b76]">
+          <span className="inline-flex rounded-full border border-[#e7e6e0] bg-white px-4 py-2 text-xs text-[#777b76]">
             New draft
           </span>
         </div>
       </header>
 
       <form onSubmit={handleSubmit(createBlog)}>
-        <div className="grid items-start gap-8 xl:grid-cols-[1fr_320px]">
-          <div className="space-y-6">
-            <section className="rounded-xl border border-[#e7e6e0] bg-white p-6 md:p-8">
-              <div className="mb-7 flex items-center gap-3 border-b border-[#efeee9] pb-5">
-                <LuFileText size={19} className="text-[#a18a5b]" />
+        <div className="grid items-start gap-5 lg:gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0 space-y-5 sm:space-y-6">
+            {/* Article details */}
+            <section className="rounded-xl border border-[#e7e6e0] bg-white p-4 sm:p-6 md:p-8">
+              <div className="mb-6 flex items-center gap-3 border-b border-[#efeee9] pb-5 sm:mb-7">
+                <LuFileText size={19} className="shrink-0 text-[#a18a5b]" />
                 <h2 className="font-semibold">Article details</h2>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-5 sm:space-y-6">
                 {/* Title */}
                 <div>
                   <label className="mb-2 block text-sm font-medium">
@@ -96,7 +96,7 @@ const CreateBlog = () => {
                         message: "Title cannot exceed 150 characters",
                       },
                     })}
-                    className="w-full rounded-lg border border-[#e7e6e0] px-4 py-3 text-sm outline-none transition placeholder:text-[#b4b5af] focus:border-[#b58b36]"
+                    className="w-full min-w-0 rounded-lg border border-[#e7e6e0] px-4 py-3 text-sm outline-none transition placeholder:text-[#b4b5af] focus:border-[#b58b36]"
                   />
 
                   {errors.title && (
@@ -106,6 +106,7 @@ const CreateBlog = () => {
                   )}
                 </div>
 
+                {/* Excerpt */}
                 <div>
                   <label className="mb-2 block text-sm font-medium">
                     Excerpt
@@ -126,7 +127,7 @@ const CreateBlog = () => {
                         message: "Excerpt cannot exceed 100 characters",
                       },
                     })}
-                    className="w-full resize-none rounded-lg border border-[#e7e6e0] px-4 py-3 text-sm leading-6 outline-none transition placeholder:text-[#b4b5af] focus:border-[#b58b36]"
+                    className="w-full min-w-0 resize-none rounded-lg border border-[#e7e6e0] px-4 py-3 text-sm leading-6 outline-none transition placeholder:text-[#b4b5af] focus:border-[#b58b36]"
                   />
 
                   {errors.excerpt && (
@@ -156,7 +157,7 @@ const CreateBlog = () => {
                         message: "Content cannot exceed 10000 characters",
                       },
                     })}
-                    className="w-full resize-y rounded-lg border border-[#e7e6e0] px-4 py-4 text-sm leading-7 outline-none transition placeholder:text-[#b4b5af] focus:border-[#b58b36]"
+                    className="w-full min-w-0 resize-y rounded-lg border border-[#e7e6e0] px-4 py-4 text-sm leading-7 outline-none transition placeholder:text-[#b4b5af] focus:border-[#b58b36]"
                   />
 
                   {errors.content && (
@@ -173,10 +174,10 @@ const CreateBlog = () => {
             </section>
 
             {/* Featured image */}
-            <section className="rounded-xl border border-[#e7e6e0] bg-white p-6 md:p-8">
-              <div className="mb-6 flex items-center gap-3">
-                <LuImagePlus size={19} className="text-[#a18a5b]" />
-                <div>
+            <section className="rounded-xl border border-[#e7e6e0] bg-white p-4 sm:p-6 md:p-8">
+              <div className="mb-5 flex items-center gap-3 sm:mb-6">
+                <LuImagePlus size={19} className="shrink-0 text-[#a18a5b]" />
+                <div className="min-w-0">
                   <h2 className="font-semibold">Featured image</h2>
                   <p className="mt-1 text-xs text-[#92958f]">
                     Choose an image that represents your article.
@@ -189,18 +190,19 @@ const CreateBlog = () => {
                   <img
                     src={preview}
                     alt="Featured image preview"
-                    className="h-64 w-full object-cover"
+                    className="h-48 w-full object-cover sm:h-64"
                   />
 
                   <button
                     type="button"
                     onClick={removeImage}
+                    aria-label="Remove featured image"
                     className="absolute right-3 top-3 rounded-full bg-white p-2 text-[#252a26] shadow-sm transition hover:text-red-600">
                     <LuX size={17} />
                   </button>
                 </div>
               ) : (
-                <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#d9d7ce] bg-[#fafaf8] px-5 py-12 text-center transition hover:border-[#b58b36] hover:bg-[#f9f7f1]">
+                <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#d9d7ce] bg-[#fafaf8] px-4 py-10 text-center transition hover:border-[#b58b36] hover:bg-[#f9f7f1] sm:px-5 sm:py-12">
                   <div className="mb-4 rounded-full bg-[#f0eadc] p-4 text-[#a18a5b]">
                     <LuImagePlus size={25} />
                   </div>
@@ -225,8 +227,8 @@ const CreateBlog = () => {
           </div>
 
           {/* Publishing sidebar */}
-          <aside className="space-y-6">
-            <section className="rounded-xl border border-[#e7e6e0] bg-white p-6">
+          <aside className="min-w-0 space-y-5 sm:space-y-6">
+            <section className="rounded-xl border border-[#e7e6e0] bg-white p-4 sm:p-6">
               <h2 className="mb-6 font-semibold">Publishing settings</h2>
 
               <div className="space-y-5">
@@ -243,13 +245,11 @@ const CreateBlog = () => {
                       })}
                       className="w-full appearance-none rounded-lg border border-[#e7e6e0] bg-white px-4 py-3 pr-10 text-sm outline-none focus:border-[#b58b36]">
                       <option value="">Select category</option>
-                      <option value="technology">Technology</option>
-                      <option value="startups">Startups</option>
-                      <option value="business">Business</option>
-                      <option value="marketing">Marketing</option>
-                      <option value="Artificial Intelligence">
-                        Artificial Intelligence
-                      </option>
+                      {categories.map((category) => (
+                        <option key={category._id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
                     </select>
 
                     <LuChevronDown
@@ -266,10 +266,10 @@ const CreateBlog = () => {
                 </div>
               </div>
 
-              <div className="mt-7 space-y-3">
+              <div className="mt-7 flex flex-col gap-3">
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#252a26] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#3b423d]">
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#252a26] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#3b423d] active:scale-[0.99]">
                   <LuSend size={16} />
                   Publish article
                 </button>
@@ -286,6 +286,7 @@ const CreateBlog = () => {
               <p className="text-xs font-semibold uppercase tracking-wider text-[#a18a5b]">
                 Writing tip
               </p>
+
               <p className="mt-3 text-sm leading-6 text-[#777b76]">
                 A strong headline grabs attention. A clear excerpt gives readers
                 a reason to keep reading.
