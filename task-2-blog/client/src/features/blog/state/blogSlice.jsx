@@ -6,6 +6,7 @@ import {
   fetchBlogs,
   getBlogsById,
   getBlogsByUser,
+  viewBlog,
 } from "./blogAction";
 
 const blogSlice = createSlice({
@@ -16,6 +17,7 @@ const blogSlice = createSlice({
     isLoading: true,
     error: null,
     editingBlog: null,
+    viewingBlog: null,
   },
   extraReducers: (builder) => {
     builder
@@ -91,6 +93,17 @@ const blogSlice = createSlice({
         state.editingBlog = null;
       })
       .addCase(editBlog.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload.data;
+      })
+      .addCase(viewBlog.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(viewBlog.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.viewingBlog = action.payload.data;
+      })
+      .addCase(viewBlog.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload.data;
       });

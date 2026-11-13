@@ -7,6 +7,7 @@ import {
   fetchBlogs,
   getBlogsById,
   getBlogsByUser,
+  viewBlog,
 } from "../state/blogAction";
 import { sileo } from "sileo";
 import { useNavigate } from "react-router";
@@ -77,9 +78,7 @@ export const useBlog = () => {
       const confirm = window.confirm(
         "Are you sure you want to delete this blog?",
       );
-
       if (!confirm) return;
-
       await dispatch(deleteBlogs(id)).unwrap();
       generateToast("success", "Blog Deleted");
     } catch (error) {
@@ -113,7 +112,9 @@ export const useBlog = () => {
 
   useEffect(() => {
     dispatch(getCategories());
-  }, [categories]);
+  }, []);
+
+  
 
   return {
     register,
@@ -130,5 +131,6 @@ export const useBlog = () => {
     onEditClick,
     handleEdit,
     categories,
+    dispatch
   };
 };

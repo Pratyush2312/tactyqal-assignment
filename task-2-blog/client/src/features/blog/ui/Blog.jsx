@@ -14,7 +14,7 @@ const Blogs = () => {
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
 
-  const { fetchAllBlogs, handleDelete } = useBlog();
+  const { fetchAllBlogs, handleDelete, navigate } = useBlog();
   const { blogs = [], isLoading } = useSelector((state) => state.blog);
 
   useEffect(() => {
@@ -118,10 +118,12 @@ const Blogs = () => {
           </div>
         ) : (
           <>
-            {/* Mobile layout */}
             <div className="divide-y divide-[#efeee9] md:hidden">
               {filteredBlogs.map((blog) => (
-                <article key={blog._id} className="p-4">
+                <article
+                  onClick={() => navigate(`/dashboard/blogs/${blog.slug}`)}
+                  key={blog._id}
+                  className="p-4">
                   <div className="flex min-w-0 gap-3">
                     {blog.featuredImage?.url ? (
                       <img

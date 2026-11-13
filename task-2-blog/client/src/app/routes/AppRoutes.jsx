@@ -14,6 +14,7 @@ import MyBlogs from "../../features/blog/ui/MyBlogs";
 import EditBlog from "./../../features/blog/ui/EditBlog";
 import Category from "../../features/category/ui/Category";
 import PublicRoute from "./PublicRoute";
+import ViewBlog from "../../features/blog/ui/ViewBlog";
 const AppRoutes = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -67,6 +68,10 @@ const AppRoutes = () => {
               path: "categories",
               element: <Category />,
             },
+            {
+              path: "blogs/:slug",
+              element:<ViewBlog/>
+            }
           ],
         },
       ],

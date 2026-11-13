@@ -26,7 +26,6 @@ const useAuthHook = () => {
 
   const handleRegister = async (data) => {
     try {
-      console.log(data);
       await dispatch(registerUser(data)).unwrap();
       generateToast("success", "User Registered");
       navigate('/');
