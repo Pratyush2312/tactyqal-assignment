@@ -147,7 +147,10 @@ export const deleteBlog = async (req, res) => {
 
 export const getBlogBySlug = async (req, res) => {
     try {
-        const blog = await Blog.find({ slug: req.params.slug });
+        const blog = await Blog.findOne({ slug: req.params.slug })
+            .populate("category", "name")
+            .populate("author","name")
+            .sort({ createdAt: -1 });
         if (!blog) {
             return res.status(404).json({
                 message: "Blog not found"
@@ -195,17 +198,17 @@ export const getBlogById = async (req, res) => {
             .sort({ createdAt: -1 });
         if (!blog) {
             return res.status(404).json({
-                message:"Blog not found"
+                message: "Blog not found"
             })
-        } 
+        }
         console.log(blog);
         return res.status(200).json({
             message: "Blog Fetched",
-            data:blog
+            data: blog
         })
     } catch (error) {
         return res.status(500).json({
-            message:"Internal Server Error"
+            message: "Internal Server Error"
         })
     }
 
